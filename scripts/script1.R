@@ -3,8 +3,10 @@ try_col <- function(files){
   for (f in files) {
     tmp <- read.delim(f)
     #lt[[paste0(f)]] <- tmp
-    if (tmp$bcr_patient_barcode){
-      cont <- cont+1
+    if (is.null(tmp$new_tumor_event_site)){
+      print("SEM TEMPO IRMAO")
+    }else{
+      cont<-cont+1
     }
   }
   return (cont)
@@ -13,10 +15,10 @@ try_col <- function(files){
 #tentar juntar new_col e add_col
 new_col <- function(files, cont){
   if(cont == 65){
-    ndata <- data.frame(bcr_patient_barcode = factor())
+    ndata <- data.frame(bcr_followup_barcode = factor())
     for(f in files){
       tmp <- read.delim(f)
-      ndata <-  rbind (ndata, select (tmp, bcr_patient_barcode))
+      ndata <-  rbind (ndata, select (tmp, bcr_followup_barcode))
     }
   }
   return (ndata)
@@ -32,16 +34,10 @@ add_col <- function(ndata, dataf){
 
 
 
-
+library (dplyr)
 files <- list.files(pattern="follow_up")
 
-setwd("C:/TCGA/Arquivos")
 
-#lt <- list()
-
-ndata ["bcr_patient_barcode"] <- factor()
-rm (bcr_patient_uuid)
-tmp <- lt[1]$nationwidechildrens.org_clinical_follow_up_v1.0_coad.txt
 dataff <- data.frame()
 ndataff <- data.frame()
 
@@ -52,11 +48,6 @@ dataff <- new_col(files, cont)
 ndataff <- new_col(files, cont)
 
 dataff <- add_col(ndataff, dataff)
-
-
-
-
-
 
 
 
