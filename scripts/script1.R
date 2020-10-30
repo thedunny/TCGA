@@ -1,10 +1,16 @@
+
+
+#aaaaaaaaa
+
 try_col <- function(files){
   cont <- 0
+  add<-0
   for (f in files) {
     tmp <- read.delim(f)
-    #lt[[paste0(f)]] <- tmp
-    if (is.null(tmp$new_tumor_event_site)){
-      print("SEM TEMPO IRMAO")
+    lt[[paste0(f)]] <- tmp
+    if (is.null(tmp$last_contact_days_to)){
+      tmp2<-lt[f]
+      print(tmp2)
     }else{
       cont<-cont+1
     }
@@ -35,19 +41,47 @@ add_col <- function(ndata, dataf){
 
 
 library (dplyr)
-files <- list.files(pattern="follow_up")
 
+files <- list.files(pattern="patient")
 
+setwd("C:/TCGA/Arquivos")
+
+lt <- list()
+
+nm_col <- "bcr_patient_barcode"
+
+ndata ["bcr_patient_barcode"] <- factor()
+rm (bcr_patient_uuid)
+tmp <- print(lt[65])
 dataff <- data.frame()
-ndataff <- data.frame()
+auxdata <- data.frame()
 
 cont <- try_col(files) 
 #primeira vez
 dataff <- new_col(files, cont)
 #outras vezes
-ndataff <- new_col(files, cont)
+auxdata <- new_col(files, cont)
 
 dataff <- add_col(ndataff, dataff)
+
+nome_col<- list()
+
+
+procura ('./', 'follow_up', nome_col)
+
+
+a <- procura(f, nome_col)
+
+getwd()
+
+
+procura <- function (f, nome_col){
+  files <- list.files(pattern="patient")
+  tmp <- read.csv(f)
+  idx <- grep(nome_col, colnames(tmp), ignore.case = TRUE)
+  return (idx)
+}
+
 
 
 
