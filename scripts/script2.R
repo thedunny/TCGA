@@ -1,46 +1,15 @@
-
-procura ('./', nome_col)
-
-
-a <- procura(f, nome_col)
-
-getwd()
-setwd('C:/TCGA/Arquivos')
-
-procura <- function (f, nome_col){
-  files <- list.files(pattern="patient")
-  for f in files{
-  tmp <- read.csv(f)
-  idx <- grep(nome_col, colnames(tmp), ignore.case = TRUE)
-  if (idx){
-    
-  }
-  }
-  return (idx)
-}
-
 lt <- list()
 for (f in files) {
   tmp <- read.delim(f)
-  
+  lt[[paste0(f)]] <- tmp
 }
 
 tmp <- lt[4]$nationwidechildrens.org_clinical_patient_cesc.txt
 setwd('C:/TCGA/Arquivos')
 
-nome_col <- 'tumor_tissue_site'
-files <- list.files(pattern="patient")
-tmp <- lt[3]$nationwidechildrens.org_clinical_patient_brca.txt
-a<- procura (tmp, nome_col)
-
-procura <- function (f, nome_col){
-  idx <- ?grep(nome_col, colnames(f), ignore.case = TRUE)
-  return (idx)
-}
-
 v_nmcol <- colnames(tmp)
 
-rm(nm_n)
+
 #criação de uma tabela com o nome das colunas que faltam em cada tabela
 c_tabela <- function (files, v_nmcol){
   a<-0
@@ -63,38 +32,36 @@ c_tabela <- function (files, v_nmcol){
 
 col_n <- c_tabela(files, v_nmcol)
 
-rm(tmp)
 
 library (dplyr)
-
-x <- col_n %>% group_by(nm_col)%>% summarise(r = n()) %>% arrange(r)
-?count(col_n, nm_col)
-
 
 
 #adicionar tabelas com as mesmas colunas
 
-n <- ('bcr_patient_uuid')
+n <- ('birth_days_to')
 
 #data(dataframe vazio com o nome da coluna), n (nome da coluna)  
 adc_linhas <- function(n, files){
-  data <-  c()
-    for (f in files){
-      tmp <- read.delim(f)
-      idx <- grep(n, colnames(tmp))
-      data <- c(data, tmp[, idx])
+  data <-  data.frame()
+  for (f in files){
+    tmp <- read.delim(f)
+    if (any(grep(n, colnames(tmp)))){
+        data <- rbind(data, select(tmp, n))
+    }else{
+        aux <- data.frame(rep('[Not Available]', nrow (tmp)))
+        names(aux) <- names(data)
+        data <- rbind (data, aux)
+    }
   }
   return(data)
 }
+#problema com names,criar vetor com o nome das colunas e depois realizar um for, mas primeiro names
+adc_coluna <- function(final_data, prosp){
+  return (cbind(final_data, prosp))
+}
 
-data1 <- data.frame(bcr_patient_uuid <- factor())
+bdt <- adc_linhas(n, files)
 
-data1 <- adc_linhas (n, files)
+final_data <- adc_coluna(final_data, bdt)
 
-class ()
-
-
-
-
-
-
+tmp <- lt[33]$nationwidechildrens.org_clinical_patient_uvm.txt
