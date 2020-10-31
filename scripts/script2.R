@@ -8,7 +8,12 @@ tmp <- lt[4]$nationwidechildrens.org_clinical_patient_cesc.txt
 setwd('C:/TCGA/Arquivos')
 
 v_nmcol <- colnames(tmp)
-
+v_nmcol <- v_nmcol[-47] #histologic_diagnosis
+#Perguntar para o prof se histologic_diagnosis e histologic_diagnosis_others é a mesma coisa
+v_nmcol <- v_nmcol[-80]
+#lymphovascular_invasion e lymphovascular_invasion_indicator
+v_nmcol['lymphovascular_invasion']
+v_nmcol <- v_nmcol[-1]
 
 #criação de uma tabela com o nome das colunas que faltam em cada tabela
 c_tabela <- function (files, v_nmcol){
@@ -47,10 +52,8 @@ adc_linhas <- function(data_func, nms, files){
     for (f in files){
       tmp <- read.delim(f)
       if (any(grep (n, colnames(tmp), fixed = TRUE))){
-          print('1')
           data <- rbind(data, select(tmp, n))
       }else{
-          print('2')
           aux <- data.frame(rep('[Not Available]', nrow (tmp)))
           names(aux) <- names(data)
           data <- rbind (data, aux)
@@ -63,7 +66,6 @@ adc_linhas <- function(data_func, nms, files){
 
 
 
-#problema com names,criar vetor com o nome das colunas e depois realizar um for, mas primeiro names
 adc_coluna <- function(final_data, prosp){
   return (cbind(final_data, prosp))
 }
@@ -75,9 +77,10 @@ cols <- adc_linhas(final_data, v_nmcol, files)
 
 final_data <- adc_coluna(final_data, bdt)
 
-tmp <- lt[3]$nationwidechildrens.org_clinical_patient_brca.txt
+tmp <- lt[4]$nationwidechildrens.org_clinical_patient_cesc.txt
 
-tmp[19]
+tmp[32]
 
+final_data <- cols
 
-a <- ?grep('histologic_diagnosis', colnames(tmp))
+a <- grep('lymphovascular_invasion', colnames(tmp))
