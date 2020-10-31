@@ -7,7 +7,7 @@ try_col <- function(files){
   add<-0
   for (f in files) {
     tmp <- read.delim(f)
-    lt[[paste0(f)]] <- tmp
+    lt[[?paste0(f)]] <- tmp
     if (is.null(tmp$last_contact_days_to)){
       tmp2<-lt[f]
       print(tmp2)

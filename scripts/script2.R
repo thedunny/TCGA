@@ -37,31 +37,47 @@ library (dplyr)
 
 
 #adicionar tabelas com as mesmas colunas
-
-n <- ('birth_days_to')
-
+i<- 'bcr_patient_uuid'
 #data(dataframe vazio com o nome da coluna), n (nome da coluna)  
-adc_linhas <- function(n, files){
-  data <-  data.frame()
-  for (f in files){
-    tmp <- read.delim(f)
-    if (any(grep(n, colnames(tmp)))){
-        data <- rbind(data, select(tmp, n))
-    }else{
-        aux <- data.frame(rep('[Not Available]', nrow (tmp)))
-        names(aux) <- names(data)
-        data <- rbind (data, aux)
+adc_linhas <- function(data_func, nms, files){
+  for (n in nms){
+    data <-  data.frame()
+    data [n] <- factor()
+    print(n)
+    for (f in files){
+      tmp <- read.delim(f)
+      if (any(grep (n, colnames(tmp), fixed = TRUE))){
+          print('1')
+          data <- rbind(data, select(tmp, n))
+      }else{
+          print('2')
+          aux <- data.frame(rep('[Not Available]', nrow (tmp)))
+          names(aux) <- names(data)
+          data <- rbind (data, aux)
+      }
     }
+    data_func <- cbind(data_func, data)
   }
-  return(data)
+  return(data_func)
 }
+
+
+
 #problema com names,criar vetor com o nome das colunas e depois realizar um for, mas primeiro names
 adc_coluna <- function(final_data, prosp){
   return (cbind(final_data, prosp))
 }
 
-bdt <- adc_linhas(n, files)
+data <- data.frame(br <- factor())
+data <- data.frame()
+
+cols <- adc_linhas(final_data, v_nmcol, files)
 
 final_data <- adc_coluna(final_data, bdt)
 
-tmp <- lt[33]$nationwidechildrens.org_clinical_patient_uvm.txt
+tmp <- lt[3]$nationwidechildrens.org_clinical_patient_brca.txt
+
+tmp[19]
+
+
+a <- ?grep('histologic_diagnosis', colnames(tmp))
