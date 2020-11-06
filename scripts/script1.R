@@ -1,6 +1,5 @@
 
 
-#aaaaaaaaa
 
 try_col <- function(files){
   cont <- 0
@@ -84,5 +83,26 @@ procura <- function (f, nome_col){
 
 
 
+#criação de uma tabela com o nome das colunas que faltam em cada tabela
+c_tabela <- function (files, v_nmcol){
+  a<-0
+  nm_n <- data.frame(nm_col = factor(), nm_tab = factor())
+  for (col in v_nmcol){
+    for (f in files){
+      tmp <- read.delim(f)
+      x <- grep(col, colnames(tmp), ignore.case = TRUE)
+      if (any(x)){
+        a<-a+1
+      }else{
+        n <- data.frame(nm_col = col, nm_tab=f)
+        nm_n <- rbind (nm_n, n)
+      }
+    }
+  }
+  print(a)
+  return (nm_n)
+}
+
+col_n <- c_tabela(files, v_nmcol)
 
 
