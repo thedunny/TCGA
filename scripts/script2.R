@@ -7,16 +7,16 @@ for (f in files) {
 tmp <- lt[4]$nationwidechildrens.org_clinical_patient_cesc.txt
 setwd('C:/TCGA/Arquivos')
 
-
+files <- list.files(pattern = 'patient')
 
 library (data.table)
 
 library (dplyr)
 
-
+col_igual
 #adicionar tabelas com as mesmas colunas
 aux <- data.frame(final_data$bcr_patient_uuid)
-
+t <-read.delim(f, skip=2)
 
 cols <- adc_linhas(aux, nm_col_di, files)
 
@@ -26,6 +26,8 @@ newcols$final_data.bcr_patient_uuid <- NULL
 
 dataf<-adc_linhas(aux, nm_col_dif, files)
 
+a<- 'race'
+
 
 #adicionar tabelas com as mesmas colunas
 adc_linhas <- function(data_func, nms, files){
@@ -34,7 +36,7 @@ adc_linhas <- function(data_func, nms, files){
     data [n] <- factor()
     print(n)
     for (f in files){
-      tmp <- read.delim(f)
+      tmp <- read.delim(f, skip=2)
       if (any(grep (n, colnames(tmp), fixed = TRUE))){
         data <- rbind(data, select(tmp, n))
       }else{
@@ -48,10 +50,17 @@ adc_linhas <- function(data_func, nms, files){
   return(data_func)
 }
 
+init <- read.csv ('TCGA.csv')
 data <- adc_linhas (aux, nv, files)
-
+aux <- init$bcr_patient_uuid
 data1 <- adc_linhas (aux, 'history_hormonal_contraceptives_use', files)
 
+data <- rename(data, race = df$race)
+
+s <- summary(data) 
+n <- nrow(data)
+round(colSums(is.na(data))*100/n, 2)
+occurences<-table(unlist(data$race))
 
 #adicionar manualmente colunas que foram removidas
 col_rmv <- function(files, nms){
@@ -63,8 +72,10 @@ col_rmv <- function(files, nms){
     idx <- which(names(tmp) %like% nms)
     if(l>1){
       for (i in idx){
-        if (names(tmp [i])==nms)
+        if (names(tmp [i])==nms){
           df <- rbind(df, tmp[i])
+          print(f)
+        }
       }
     }else if(l==1){
       df <- rbind(df, tmp[idx])
@@ -76,8 +87,11 @@ col_rmv <- function(files, nms){
   }
   return (df)
 }
+library(data.table)
 
-r <- col_rmv(files, 'race')
+coltst <- col_rmv(files, 'history_neoadjuvant_treatment.1')
+col_igual
+data <- cbind (data, r)
 
 #funçao pegar o nome de todas as colunas de todas as tabelas
 grab_cols <- function(files){
@@ -109,7 +123,7 @@ sep_col_igual <- function (nm_col_di){
 
 col_igual <- unique(sep_col_igual(nm_col_di))
 
-
+library (data.table)
 
 #função para remover colunas parecidas
 rmv_colunas_parecidas <- function (col_igual, nm_col_di){
@@ -124,8 +138,194 @@ rmv_colunas_parecidas <- function (col_igual, nm_col_di){
   return (n)
 }
 
-
-
 nv <- rmv_colunas_parecidas(col_igual, nm_col_di)
+
+
+
+d <- 'bcr_patient_uuid'
+data[, d][1]
+
+rmv <- function (data){
+  name <- colnames(aux)
+  
+  for(n in name){
+    nrmv <- data[, n][1]
+    nrmv2 <- data[, n][2]
+    data <- data[-nrmv, ]
+    print(nrmv)
+  }
+  return (data)
+}
+
+aux <- rmv (aux)
+
+aux <- data$bcr_patient_barcode
+
+colnames(aux)<- 'bcr_patient_barcode'
+aux <- data.frame(aux <- aux)
+
+
+nrmv <- aux[, 'bcr_patient_barcode'][1]
+
+
+?replace
+
+r<- data[, n]=='[Not Available]'
+
+
+data[, n][1]
+summary(r)
+
+length (r[r==TRUE])
+
+?mutate_all
+?coalesce
+
+data %>% 
+  mutate_all(coalesce, '[Not Available]')
+
+data %>% replace(data, c('[Not Available]', '[Not Aplicable]', '[Not Evaluate]'), c(NA, NA, NA))
+
+
+
+############################################################
+#Remover primeiras 2 linhas de cada tabela
+r <- aux[, "bcr_patient_barcode"]=='bcr_patient_barcode'
+l<- c()
+for (i in 1:length(r)){
+  if (r[i]==TRUE){
+    l <- c(l, i)
+  }
+}
+
+l = rev(l)
+
+aux <- aux[-l, ]
+
+data1 <- data1[-l, ]
+data1<- data
+
+#############################################
+
+sub_NA <- function(data){
+  name <- colnames(data)
+  
+  for (n in name){
+    
+    ava <- which(data[, n] == '[Not Available]')
+    apl <- which(data[, n] == '[Not Aplicable]')
+    eva <- which(data[, n] == '[Not Evaluate]')
+    if (any(ava)){
+      data [ava, n] <- NA
+    }
+  }
+}
+data[1]
+
+
+
+which(data[, n=='[Not Available]'])
+
+for (f in files){
+  tmp <- read.delim (f)
+  
+}
+
+tmp <- lt[24]$nationwidechildrens.org_clinical_patient_read.txt
+tmp$history_o
+
+col_igual
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
