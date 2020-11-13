@@ -36,7 +36,7 @@ adc_linhas <- function(data_func, nms, files){
     data [n] <- factor()
     print(n)
     for (f in files){
-      tmp <- read.delim(f, skip=2)
+      tmp <- read.delim(f)
       if (any(grep (n, colnames(tmp), fixed = TRUE))){
         data <- rbind(data, select(tmp, n))
       }else{
@@ -50,17 +50,17 @@ adc_linhas <- function(data_func, nms, files){
   return(data_func)
 }
 
+library (dplyr)
 init <- read.csv ('TCGA.csv')
 data <- adc_linhas (aux, nv, files)
 aux <- init$bcr_patient_uuid
 data1 <- adc_linhas (aux, 'history_hormonal_contraceptives_use', files)
+data <- cbind (data, col)
 
-data <- rename(data, race = df$race)
+data <- rename(data, race = col..race)
+names(data)[576] <- 'race'
+datateste <- data
 
-s <- summary(data) 
-n <- nrow(data)
-round(colSums(is.na(data))*100/n, 2)
-occurences<-table(unlist(data$race))
 
 #adicionar manualmente colunas que foram removidas
 col_rmv <- function(files, nms){
@@ -74,11 +74,11 @@ col_rmv <- function(files, nms){
       for (i in idx){
         if (names(tmp [i])==nms){
           df <- rbind(df, tmp[i])
-          print(f)
         }
       }
     }else if(l==1){
       df <- rbind(df, tmp[idx])
+      print(f)
     }else{
       aux <- data.frame(rep('[Not Available]', nrow (tmp)))
       names(aux) <- names(df)
@@ -89,9 +89,11 @@ col_rmv <- function(files, nms){
 }
 library(data.table)
 
-coltst <- col_rmv(files, 'history_neoadjuvant_treatment.1')
+col<- col_rmv(files, 'extranodal_involvement')
 col_igual
 data <- cbind (data, r)
+
+
 
 #funçao pegar o nome de todas as colunas de todas as tabelas
 grab_cols <- function(files){
@@ -142,20 +144,9 @@ nv <- rmv_colunas_parecidas(col_igual, nm_col_di)
 
 
 
-d <- 'bcr_patient_uuid'
-data[, d][1]
 
-rmv <- function (data){
-  name <- colnames(aux)
-  
-  for(n in name){
-    nrmv <- data[, n][1]
-    nrmv2 <- data[, n][2]
-    data <- data[-nrmv, ]
-    print(nrmv)
-  }
-  return (data)
-}
+
+
 
 aux <- rmv (aux)
 
@@ -176,7 +167,7 @@ r<- data[, n]=='[Not Available]'
 data[, n][1]
 summary(r)
 
-length (r[r==TRUE])
+length (g[g==TRUE])
 
 ?mutate_all
 ?coalesce
@@ -186,11 +177,11 @@ data %>%
 
 data %>% replace(data, c('[Not Available]', '[Not Aplicable]', '[Not Evaluate]'), c(NA, NA, NA))
 
-
+g <- percdata[, 'Porcentagem'] > 90
 
 ############################################################
 #Remover primeiras 2 linhas de cada tabela
-r <- aux[, "bcr_patient_barcode"]=='bcr_patient_barcode'
+r <- data[, "bcr_patient_uuid"]=='bcr_patient_uuid'
 l<- c()
 for (i in 1:length(r)){
   if (r[i]==TRUE){
@@ -198,73 +189,75 @@ for (i in 1:length(r)){
   }
 }
 
+col <- data.frame(race <- col)
 l = rev(l)
 
-aux <- aux[-l, ]
+col <- col[-j, ]
 
-data1 <- data1[-l, ]
-data1<- data
+col <- col[-l, ]
 
+summary (data$gender)
 #############################################
 
 sub_NA <- function(data){
   name <- colnames(data)
   
   for (n in name){
-    
+    print(n)
     ava <- which(data[, n] == '[Not Available]')
-    apl <- which(data[, n] == '[Not Aplicable]')
-    eva <- which(data[, n] == '[Not Evaluate]')
+    apl <- which(data[, n] == '[Not Applicable]')
+    eva <- which(data[, n] == '[Not Evaluated]')
+    unk <- which(data[, n] == '[Unknown]')
+
     if (any(ava)){
-      data [ava, n] <- NA
+      data <- nas(ava, data, n)
+    }else if(any(apl)){
+      data <- nas(apl, data, n)
+    }else if (any(eva)){
+      data <- nas(eva, data, n)
+    }else if (any(unk)){
+      data <- nas(unk, data, n)
     }
   }
+  return(data)
 }
-data[1]
+
+nas <- function(non, data, n){
+  for (i in non){
+    data[i, n] <- NA
+  }
+  return (data)
+}
+
+datateste <- sub_NA(datateste)
+
+datateste <- data
+summary(datateste$gender)
 
 
 
-which(data[, n=='[Not Available]'])
+per <- round(colSums(is.na(datateste))*100/n, 2)
 
-for (f in files){
-  tmp <- read.delim (f)
+n <- nrow (datateste)
+occurences<-table(unlist(data$race)) 
+
+
+rm_col_100 <- function(data, percdata){
   
+  
+  i <- which(percdata[, 'Porcentagem'] == 100)
+  
+  data <- data[, -i]
+  
+  percdata <- percdata [-i, ]
+      
+    
 }
 
-tmp <- lt[24]$nationwidechildrens.org_clinical_patient_read.txt
-tmp$history_o
-
-col_igual
+datateste <- rm_col_100 (datateste, percdata)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
 
 
