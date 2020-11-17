@@ -14,6 +14,50 @@ library (data.table)
 library (dplyr)
 
 
+#funçao pegar o nome de todas as colunas de todas as tabelas
+grab_cols <- function(files){
+  nm_colunas <- c()
+  for (f in files){
+    tmp <- read.delim(f)
+    nm_colunas <- c(nm_colunas, colnames(tmp))
+    
+  }
+  return (nm_colunas)
+}
+
+nm_col_di <- unique(grab_cols(files))
+
+#função para separar as colunas que podem ser a mesma
+sep_col_igual <- function (nm_col_di){
+  df <- c()
+  for (nms in nm_col_di){
+    idx<-(length(which(like(nm_col_di, nms))))
+    if (idx>1){
+      df <- c(df, nm_col_di[which(like(nm_col_di, nms))])
+    }
+  }
+  return (df)
+}
+
+col_igual <- unique(sep_col_igual(nm_col_di))
+
+
+
+#função para remover colunas parecidas
+rmv_colunas_parecidas <- function (col_igual, nm_col_di){
+  n<-nm_col_di
+  for (c in col_igual){
+    idx <- which(like(n, c))
+    if (any(idx)){
+      n <- n[-idx]
+      
+    }
+  }
+  return (n)
+}
+
+col_dif <- rmv_colunas_parecidas(col_igual, nm_col_di)
+
 
 #adicionar tabelas com as mesmas colunas
 adc_linhas <- function(data_func, nms, files){
@@ -38,15 +82,9 @@ adc_linhas <- function(data_func, nms, files){
 
 library (dplyr)
 init <- read.csv ('TCGA.csv')
-datat <- adc_linhas (aux, nv, files)
 aux <- init$bcr_patient_uuid
-data1 <- adc_linhas (aux, 'history_other_malignancy.1', files)
-data <- cbind (data, col)
+data <- adc_linhas (aux, col_dif, files)
 
-data <- rename(data, race = col..race)
-names(data)[576] <- 'race'
-datateste <- data
-aux <- init$bcr_patient_barcode
 
 #adicionar manualmente colunas que foram removidas
 col_rmv <- function(files, nms){
@@ -61,7 +99,6 @@ col_rmv <- function(files, nms){
     if(length(idx)>1){
       for (i in idx){
         if (colnames(tmp [i])==nms){
-          print('l>1')
           df <- rbind(df, tmp[i])
           flag <- 1
         }
@@ -75,17 +112,14 @@ col_rmv <- function(files, nms){
     }else{ 
       if(length(idx)==1){
         if(colnames(tmp [idx])==nms){
-          print('==')
           df <- rbind(df, tmp[idx])
           
         }else if(colnames(tmp [idx])!=nms) {
-          print('=!')
           aux <- data.frame(rep(NA, nrow (tmp)))
           names(aux) <- names(df)
           df<- rbind (df, aux)
         }
       }else{
-        print('else')
         aux <- data.frame(rep(NA, nrow (tmp)))
         names(aux) <- names(df)
         df<- rbind (df, aux)
@@ -95,104 +129,14 @@ col_rmv <- function(files, nms){
   return (df)
 }
 
-library(data.table)
 
 ds <- data.frame(aux <- aux)
 for (c in col_igual){
   col <- col_rmv(files, c)
   ds <- cbind (ds, col)
 }
-col<- col_rmv(files, )
-col_igual
-data <- cbind (data, r)
 
 
-
-#funçao pegar o nome de todas as colunas de todas as tabelas
-grab_cols <- function(files){
-  nm_colunas <- c()
-  for (f in files){
-    tmp <- read.delim(f)
-    nm_colunas <- c(nm_colunas, colnames(tmp))
-    
-    }
-  return (nm_colunas)
-}
-
-nm_col_di <- unique(grab_cols(files))
-
-idx <- grep ('history_colorectal_cancer', nm_col_di)
-
-#função para separar as colunas que podem ser a mesma
-sep_col_igual <- function (nm_col_di){
-  df <- c()
-  for (nms in nm_col_di){
-    idx<-(length(which(like(nm_col_di, nms))))
-    if (idx>1){
-        df <- c(df, nm_col_di[which(like(nm_col_di, nms))])
-    }
-  }
-  return (df)
-}
-
-
-col_igual <- unique(sep_col_igual(nm_col_di))
-
-library (data.table)
-
-#função para remover colunas parecidas
-rmv_colunas_parecidas <- function (col_igual, nm_col_di){
-  n<-nm_col_di
-  for (c in col_igual){
-    idx <- which(like(n, c))
-    if (any(idx)){
-      n <- n[-idx]
-
-    }
-  }
-  return (n)
-}
-
-nv <- rmv_colunas_parecidas(col_igual, nm_col_di)
-
-
-
-
-
-
-
-aux <- rmv (aux)
-
-aux <- data$bcr_patient_barcode
-
-colnames(aux)<- 'bcr_patient_barcode'
-aux <- data.frame(aux <- aux)
-
-
-nrmv <- aux[, 'bcr_patient_barcode'][1]
-
-
-?replace
-
-r<- data[, n]=='[Not Available]'
-
-
-data[, n][1]
-summary(r)
-
-length (g[g==TRUE])
-
-?mutate_all
-?coalesce
-
-data %>% 
-  mutate_all(coalesce, '[Not Available]')
-
-data %>% replace(data, c('[Not Available]', '[Not Aplicable]', '[Not Evaluate]'), c(NA, NA, NA))
-
-g <- percdata[, 'Porcentagem'] > 90
-
-############################################################
 #Remover primeiras 2 linhas de cada tabela
 r <- data[, "bcr_patient_uuid"]=='bcr_patient_uuid'
 l<- c()
@@ -209,9 +153,8 @@ datat <- datat[-j, ]
 
 datat <- datat[-l, ]
 
-summary (data$gender)
-#############################################
 
+#Substituir valores inválidos por NA
 sub_NA <- function(data){
   name <- colnames(data)
   
@@ -221,7 +164,7 @@ sub_NA <- function(data){
     apl <- which(data[, n] == '[Not Applicable]')
     eva <- which(data[, n] == '[Not Evaluated]')
     unk <- which(data[, n] == '[Unknown]')
-
+    
     if (any(ava)){
       data <- nas(ava, data, n)
     }else if(any(apl)){
@@ -242,88 +185,24 @@ nas <- function(non, data, n){
   return (data)
 }
 
-datat <- sub_NA(datat)
+data <- sub_NA(data)
 
 #Calcular a porcentagem de NAs presentes nas colunas
-o <- round(colSums(is.na(datat))*100/n, 2)
-
 n <- nrow (datat)
-o <- o[-1, ]
+i <- round(colSums(is.na(datat))*100/n, 2)
+
+
 #Remover colunas que tenham 100% de valores faltantes
-o <- data.frame(o)
+per_col_igual <- data.frame(i)
 
-i <- which(o[, 'o' ] ==100 )
+i <- which(per_col_igual[, 'per_col_igual' ] ==100 )
 
-o <- cbind(o, nv)
+per_col_igual <- cbind(per_col_igual, col_igual)
 
-nulos<- o[i, ]
+per_col_igual [i, ]
 
 ds <- ds[, -i]
-  
+
 per_col_igual <- per_col_igual [-i, ]
-      
-    
-
-
-rm_col_100 (ds, per_col_igual, 'per_col_igual')
-
 
 col_igual <- col_igual[-1]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
