@@ -102,7 +102,7 @@ for (c in col_igual){
   col <- col_rmv(files, c)
   ds <- cbind (ds, col)
 }
-col<- col_rmv(files, )
+col<- col_rmv(files, 'race')
 col_igual
 data <- cbind (data, r)
 
@@ -205,9 +205,9 @@ for (i in 1:length(r)){
 col <- data.frame(race <- col)
 l = rev(l)
 
-datat <- datat[-j, ]
-
-datat <- datat[-l, ]
+col <- col[-j, ]
+col <- data.frame(col)
+col <- col[-l, ]
 
 summary (data$gender)
 #############################################
@@ -221,14 +221,17 @@ sub_NA <- function(data){
     apl <- which(data[, n] == '[Not Applicable]')
     eva <- which(data[, n] == '[Not Evaluated]')
     unk <- which(data[, n] == '[Unknown]')
-
-    if (any(ava)){
+    
+    if(any(ava)){
       data <- nas(ava, data, n)
-    }else if(any(apl)){
+    }
+    if(any(apl)){
       data <- nas(apl, data, n)
-    }else if (any(eva)){
+    }
+    if (any(eva)){
       data <- nas(eva, data, n)
-    }else if (any(unk)){
+    }
+    if (any(unk)){
       data <- nas(unk, data, n)
     }
   }
@@ -242,12 +245,12 @@ nas <- function(non, data, n){
   return (data)
 }
 
-datat <- sub_NA(datat)
+col <- sub_NA(col)
 
 #Calcular a porcentagem de NAs presentes nas colunas
-o <- round(colSums(is.na(datat))*100/n, 2)
+per_col_igual<- round(colSums(is.na(ds))*100/n, 2)
 
-n <- nrow (datat)
+n <- nrow (ds)
 o <- o[-1, ]
 #Remover colunas que tenham 100% de valores faltantes
 o <- data.frame(o)
@@ -264,25 +267,32 @@ per_col_igual <- per_col_igual [-i, ]
       
     
 
-
 rm_col_100 (ds, per_col_igual, 'per_col_igual')
 
 
 col_igual <- col_igual[-1]
 
 
+tmp <- lt[3]$nationwidechildrens.org_clinical_patient_brca.txt
 
 
+data <- cbind(data, ds$retrospective_collection)
 
 
+names(data)[503] <- 'retrospective_collection'
 
+summary(ds$sdha
+)
 
+data[503]<- NULL
 
+nms_col_igual <- c (11, 12, 13, 14, 15, 21, 22, 23, 24, 1, 3,5,7,8, 9, 10, 27, 28, 29, 30, 32, 34, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52,53, 54, 55, 56,57, 59, 95, 117, 118, 119, 146,147,148,149)
 
+for (n in nms_col_igual){
+  data <- cbind(data, ds[n])
+}
 
-
-
-
+data[502:527] <- NULL
 
 
 

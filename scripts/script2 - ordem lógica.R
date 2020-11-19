@@ -95,7 +95,6 @@ col_rmv <- function(files, nms){
     tmp <- read.delim(f)
     flag <-0 
     idx <- which(names(tmp) %like% nms)
-    print (length(idx))
     if(length(idx)>1){
       for (i in idx){
         if (colnames(tmp [i])==nms){
@@ -136,7 +135,7 @@ for (c in col_igual){
   ds <- cbind (ds, col)
 }
 
-
+col <- col_rmv(files, 'race')
 #Remover primeiras 2 linhas de cada tabela
 r <- data[, "bcr_patient_uuid"]=='bcr_patient_uuid'
 l<- c()
@@ -149,29 +148,32 @@ for (i in 1:length(r)){
 col <- data.frame(race <- col)
 l = rev(l)
 
-datat <- datat[-j, ]
+ds <- ds[-j, ]
 
-datat <- datat[-l, ]
+ds <- ds[-l, ]
 
 
 #Substituir valores inválidos por NA
 sub_NA <- function(data){
   name <- colnames(data)
-  
+
   for (n in name){
     print(n)
     ava <- which(data[, n] == '[Not Available]')
     apl <- which(data[, n] == '[Not Applicable]')
     eva <- which(data[, n] == '[Not Evaluated]')
     unk <- which(data[, n] == '[Unknown]')
-    
-    if (any(ava)){
+
+    if(any(ava)){
       data <- nas(ava, data, n)
-    }else if(any(apl)){
+    }
+    if(any(apl)){
       data <- nas(apl, data, n)
-    }else if (any(eva)){
+    }
+    if (any(eva)){
       data <- nas(eva, data, n)
-    }else if (any(unk)){
+    }
+    if (any(unk)){
       data <- nas(unk, data, n)
     }
   }
@@ -185,24 +187,29 @@ nas <- function(non, data, n){
   return (data)
 }
 
-data <- sub_NA(data)
+ds <- sub_NA(ds)
+
 
 #Calcular a porcentagem de NAs presentes nas colunas
-n <- nrow (datat)
-i <- round(colSums(is.na(datat))*100/n, 2)
+n <- nrow (ds)
+per_col_igual <- round(colSums(is.na(ds))*100/n, 2)
 
 
 #Remover colunas que tenham 100% de valores faltantes
-per_col_igual <- data.frame(i)
+per_col_igual <- data.frame(per_col_igual)
 
 i <- which(per_col_igual[, 'per_col_igual' ] ==100 )
 
-per_col_igual <- cbind(per_col_igual, col_igual)
+per_col_igual <- cbind(per_col_igual, colnames(ds))
 
 per_col_igual [i, ]
 
-ds <- ds[, -i]
+ds <- ds[,-i]
 
 per_col_igual <- per_col_igual [-i, ]
 
 col_igual <- col_igual[-1]
+
+row.names(per_col_igual) <- c(1:149)
+
+
