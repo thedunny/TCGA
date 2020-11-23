@@ -63,7 +63,6 @@ adc_cols <- function(files, nms){
     if(length(idx)>1){
       for (i in idx){
         if (colnames(tmp [i])==nms){
-          print('l>1')
           df <- rbind(df, tmp[i])
           flag <- 1
         }
@@ -77,17 +76,14 @@ adc_cols <- function(files, nms){
     }else{ 
       if(length(idx)==1){
         if(colnames(tmp [idx])==nms){
-          print('==')
           df <- rbind(df, tmp[idx])
           
         }else if(colnames(tmp [idx])!=nms) {
-          print('=!')
           aux <- data.frame(rep(NA, nrow (tmp)))
           names(aux) <- names(df)
           df<- rbind (df, aux)
         }
       }else{
-        print('else')
         aux <- data.frame(rep(NA, nrow (tmp)))
         names(aux) <- names(df)
         df<- rbind (df, aux)
@@ -117,7 +113,7 @@ for (i in 1:length(r)){
 
 j = rev(j)
 
-ds <- ds, ]
+ds <- ds[-j, ]
 
 ds <- ds[-l, ]
 
