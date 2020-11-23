@@ -38,7 +38,7 @@ adc_linhas <- function(data_func, nms, files){
 
 library (dplyr)
 init <- read.csv ('TCGA.csv')
-datat <- adc_linhas (aux, nv, files)
+datat <- adc_linhas (aux, , files)
 aux <- init$bcr_patient_uuid
 data1 <- adc_linhas (aux, 'history_other_malignancy.1', files)
 data <- cbind (data, col)
@@ -98,15 +98,15 @@ col_rmv <- function(files, nms){
 library(data.table)
 
 ds <- data.frame(aux <- aux)
-for (c in col_igual){
+for (c in sel_cols){
   col <- col_rmv(files, c)
-  ds <- cbind (ds, col)
+  ds <- cbind (d, col)
 }
-col<- col_rmv(files, 'race')
+aux<- col_rmv(files, 'bcr_patient_uuid')
 col_igual
 data <- cbind (data, r)
-
-
+tmp$nte_pr_status_by_ihc
+ds$bcr_patient_uuid <- NULL
 
 #funçao pegar o nome de todas as colunas de todas as tabelas
 grab_cols <- function(files){
@@ -194,20 +194,22 @@ g <- percdata[, 'Porcentagem'] > 90
 
 ############################################################
 #Remover primeiras 2 linhas de cada tabela
-r <- data[, "bcr_patient_uuid"]=='bcr_patient_uuid'
-l<- c()
+r <- ds[, "bcr_patient_uuid"]=='CDE_ID:'
+j<- c()
 for (i in 1:length(r)){
   if (r[i]==TRUE){
-    l <- c(l, i)
+    j <- c(j, i)
   }
 }
 
 col <- data.frame(race <- col)
-l = rev(l)
+j = rev(j)
 
-col <- col[-j, ]
-col <- data.frame(col)
-col <- col[-l, ]
+col1 <- col1[-j, ]
+
+col1 <- col1[-l]
+
+col1 <- data.frame(col1)
 
 summary (data$gender)
 #############################################
@@ -244,96 +246,21 @@ nas <- function(non, data, n){
   }
   return (data)
 }
-
-col <- sub_NA(col)
+ds<- sub_NA(ds)
 
 #Calcular a porcentagem de NAs presentes nas colunas
+n <- nrow (df)
+
 per_col_igual<- round(colSums(is.na(ds))*100/n, 2)
 
-n <- nrow (ds)
-o <- o[-1, ]
 #Remover colunas que tenham 100% de valores faltantes
-o <- data.frame(o)
+per_col_igual <- data.frame(per_col_igual)
 
-i <- which(o[, 'o' ] ==100 )
+i <- which(per_col_igual[, 'per_col_igual' ] ==100 )
 
-o <- cbind(o, nv)
+per_col_igual$nm_col <- colnames(df)
 
-nulos<- o[i, ]
+nulos<- per_col_igual[i, ]
+nulos
 
-ds <- ds[, -i]
-  
-per_col_igual <- per_col_igual [-i, ]
-      
-    
-
-rm_col_100 (ds, per_col_igual, 'per_col_igual')
-
-
-col_igual <- col_igual[-1]
-
-
-tmp <- lt[3]$nationwidechildrens.org_clinical_patient_brca.txt
-
-
-data <- cbind(data, ds$retrospective_collection)
-
-
-names(data)[503] <- 'retrospective_collection'
-
-summary(ds$sdha
-)
-
-data[503]<- NULL
-
-nms_col_igual <- c (11, 12, 13, 14, 15, 21, 22, 23, 24, 1, 3,5,7,8, 9, 10, 27, 28, 29, 30, 32, 34, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52,53, 54, 55, 56,57, 59, 95, 117, 118, 119, 146,147,148,149)
-
-for (n in nms_col_igual){
-  data <- cbind(data, ds[n])
-}
-
-data[502:527] <- NULL
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+write.csv(ds, 'Dados Adenocarcinoma.csv', row.names = FALSE)
