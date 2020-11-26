@@ -100,7 +100,7 @@ for (c in sel_cols){
   col <- adc_cols(files, c)
   ds <- cbind (d, col)
 }
-aux<- adc_cols(files, 'bcr_patient_uuid')
+aux<- adc_cols(files, 'history_neoadjuvant_treatment')
 
 #Remover as primeiras duas linhas do dataframe
 r <- ds[, "bcr_patient_uuid"]=='CDE_ID:'
@@ -113,36 +113,22 @@ for (i in 1:length(r)){
 
 j = rev(j)
 
-ds <- ds[-j, ]
+aux <- aux[-j ]
 
-ds <- ds[-l, ]
+aux <- aux[-l, ]
 
 
 #Substituir o '[Not Available]' por NA
-sub_NA <- function(data){
-  name <- colnames(data)
-  
-  for (n in name){
-    print(n)
-    ava <- which(data[, n] == '[Not Available]')
-    apl <- which(data[, n] == '[Not Applicable]')
-    eva <- which(data[, n] == '[Not Evaluated]')
-    unk <- which(data[, n] == '[Unknown]')
-    
-    if(any(ava)){
-      data <- nas(ava, data, n)
-    }
-    if(any(apl)){
-      data <- nas(apl, data, n)
-    }
-    if (any(eva)){
-      data <- nas(eva, data, n)
-    }
-    if (any(unk)){
-      data <- nas(unk, data, n)
+sub_NAS <- function(data){
+  na <- c('[Not Available]', '[Not Applicable]', '[Not Evaluated]', '[Unknown]')
+  for (n in colnames(data)){
+    for (i in na){
+      p <- which(data[, n] == i)
+      if (any(p))
+        data <- nas(p, data, n)
     }
   }
-  return(data)
+  return (data)
 }
 
 nas <- function(non, data, n){
@@ -151,10 +137,10 @@ nas <- function(non, data, n){
   }
   return (data)
 }
-ds<- sub_NA(ds)
+aux<- sub_NAS(aux)
 
 #Calcular a porcentagem de NAs presentes nas colunas
-n <- nrow (df)
+n <- nrow (ds)
 
 per_col_igual<- round(colSums(is.na(ds))*100/n, 2)
 
@@ -163,11 +149,11 @@ per_col_igual <- data.frame(per_col_igual)
 
 i <- which(per_col_igual[, 'per_col_igual' ] ==100 )
 
-per_col_igual$nm_col <- colnames(df)
+per_col_igual$nm_col <- colnames(ds)
 
 nulos<- per_col_igual[i, ]
 nulos
 
-write.csv(ds, 'Dados Adenocarcinoma.csv', row.names = FALSE)
+write.csv(ds, 'DadosAdenocarcinoma.csv')
 
 
