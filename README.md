@@ -11,13 +11,13 @@ O préprocessamento foi realizado utilizando a linguagem R, e seu fluxo de traba
 - Seleção de tabelas relacionadas ao subtipo de cancer Adenocarcinoma;
 - Remoção de ruídos;
 - Substituição de dados ausentes pelo termo NA;
-- Calculo da porcentagem de valores ausentes em cada coluna, e remoção das colunas que tivessem mais de 90% dos dados faltantes e que não representassem mudança na capacidade analítica do conjunto original dos dados;
+- Cálculo da porcentagem de valores ausentes em cada coluna, e remoção das colunas que tivessem mais de 90% dos dados faltantes e que não representassem mudança na capacidade analítica do conjunto original dos dados;
 
 Os códigos utilizados para a realização dessas etapas estão localizados dentro da pasta scripts no arquivo "script final.R".
 
 ## Utilização
 
-Para acessar e utilizar o *data frame* resultante do préprocessamento é somente acessar o link abaixo: 
+Para acessar e utilizar o *data frame* resultante do préprocessamento é só acessar o link abaixo: 
 
 [https://drive.google.com/file/d/1kVxvqe1d0IT5sAS9PVejbbkBNtMMUyQE/view?usp=sharing](https://drive.google.com/file/d/1kVxvqe1d0IT5sAS9PVejbbkBNtMMUyQE/view?usp=sharing)
 
