@@ -11,7 +11,7 @@ for (f in 1:length(files)){
 cancer_types
 cancer_types_filt <- cancer_types[c(2,3,4,5,6,8,12,13,17,20,21,23,24,27,29,31)]
 files <- files[c(2,3,4,5,6,8,12,13,17,20,21,23,24,27,29,31)]
-
+#seleção de colunas que existem em todas as tabelas escolhidas
 cancer_types_attibutes <- c()
 cancer_types_desc <- c()
 idx = 1
@@ -28,7 +28,7 @@ for (f in files) {
 
 ColNames_filt <- sort(unique(unlist(cancer_types_attibutes)))
 
-
+#seleção de colunas de interesse
 ColNames_count <- c()
 for (cn in ColNames_filt) {
   n = 0
@@ -147,13 +147,14 @@ per_col_igual<- round(colSums(is.na(ds))*100/n, 2)
 #Remover colunas que tenham 100% de valores faltantes
 per_col_igual <- data.frame(per_col_igual)
 
-i <- which(per_col_igual[, 'per_col_igual' ] ==100 )
+i <- which(per_col_igual[, 'per_col_igual' ] > 90)
 
 per_col_igual$nm_col <- colnames(ds)
 
 nulos<- per_col_igual[i, ]
 nulos
 
+ds <- ds [, -i]
+
+
 write.csv(ds, 'DadosAdenocarcinoma.csv')
-
-
